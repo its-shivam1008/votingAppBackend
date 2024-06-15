@@ -11,11 +11,27 @@ router.post('/signup', async(req, res)=>{
 
         const payload = {
             id : response.id,
-            adhaarNum : response.adhaarNum,
             name: response.name
         }
         const token = generateToken(payload);
         res.status(200).json({response,token});
+    }catch(err){
+        res.status(500).json({error: "Internal server error"})
+    }
+});
+
+router.post('/login', async(req,res) =>{
+    try{
+        const {adhaarNum, password} = req.body;
+        const user = await User.findOne({adhaarNum:adhaarNum});
+        if(!user || !(await user.comparePassword(password))) 
+            res.status(401).json({error:"Incorrect Adhaar number or password"});
+        const payload = {
+            id : user.id,
+            name: user.name
+        }
+        const token = generateToken(payload);
+        res.status(200).json({token});
     }catch(err){
         res.status(500).json({error: "Internal server error"})
     }
