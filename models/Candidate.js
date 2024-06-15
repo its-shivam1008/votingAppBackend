@@ -11,7 +11,7 @@ const newCandidate = new mongoose.Schema({
     },
     party:{
         type:String,
-        enum:["BJP", "CONGRESS", "SP","BSP","NCP"]   
+        enum:["BJP", "CONGRESS", "SP","BSP","TMC"]   
     },
     votes:[
         {

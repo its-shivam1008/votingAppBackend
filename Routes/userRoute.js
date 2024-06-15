@@ -24,14 +24,16 @@ router.post('/login', async(req,res) =>{
     try{
         const {adhaarNum, password} = req.body;
         const user = await User.findOne({adhaarNum:adhaarNum});
-        if(!user || !(await user.comparePassword(password))) 
+        if(!user || !(await user.comparePassword(password))){
             res.status(401).json({error:"Incorrect Adhaar number or password"});
-        const payload = {
-            id : user.id,
-            name: user.name
+        }else{
+            const payload = {
+                id : user.id,
+                name: user.name
+            }
+            const token = generateToken(payload);
+            res.status(200).json({token});
         }
-        const token = generateToken(payload);
-        res.status(200).json({token});
     }catch(err){
         res.status(500).json({error: "Internal server error"})
     }
@@ -61,14 +63,14 @@ router.put('/profile/:field', jwtAuthMiddleware, async(req,res)=>{
 
                 const user = await User.findById(userId);
 
-                if(!user || !(await user.comparePassword(currentPass))) 
+                if(!user || !(await user.comparePassword(currentPass))){
                     res.status(401).json({error:"Incorrect password"});
-        
-                user.password = newPass;
-                const response = await user.save();
-
-                res.status(200).json({response,mssg:"Updated "+field});
-
+                }else{
+                    user.password = newPass;
+                    const response = await user.save();
+    
+                    res.status(200).json({response,mssg:"Updated "+field});
+                }
             }else{
                 const response = await User.findByIdAndUpdate(userId, data, {
                 runValidators: true,
