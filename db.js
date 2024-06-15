@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoUrl = 'mongodb://localhost:27017/votingApp';
-
-mongoose.connect(mongoUrl);
+mongoose.connect(process.env.mongoUrl);
 
 const db = mongoose.connection;
 

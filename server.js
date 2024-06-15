@@ -2,9 +2,7 @@ const express = require('express');
 const app = express();
 const db = require('./db');
 const bodyParser = require('body-parser');
-const userRoute = require('./Routes/userRoute')
-
-const PORT = 8080;
+const userRoute = require('./Routes/userRoute');
 
 app.use(bodyParser.json());
 
@@ -14,6 +12,6 @@ app.get('/hello', (req,res) =>{
     res.send('Hello World!');
 })
 
-app.listen(PORT, () => {
-    console.log('App is live at port:',PORT);
+app.listen(process.env.PORT, () => {
+    console.log('App is live at port:',process.env.PORT);
 })
