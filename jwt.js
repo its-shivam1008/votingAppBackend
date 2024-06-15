@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 const jwtAuthMiddleware = function(req,res,next){
     const authorization = req.headers.authorization;
@@ -7,7 +8,7 @@ const jwtAuthMiddleware = function(req,res,next){
         const token = req.headers.authorization.split(" ")[1];
         if(!token) return res.status(401).json({error:"Unauthorized"});
         const decoded = jwt.verify(token, process.env.JWT_KEY);
-        req.data = decoded;
+        req.user = decoded;
         next();
     }catch(err){
         res.status(401).json({error:"Invalid token"});
