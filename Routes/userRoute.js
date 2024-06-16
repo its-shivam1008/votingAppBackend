@@ -1,20 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Candidate = require('../models/Candidate');
 const {jwtAuthMiddleware, generateToken} = require('./../jwt')
+
+const adminInDb =async (data) =>{
+    try{
+        if(data.userType=='admin'){
+            const findAdmin = await User.findOne({userType:'admin'});
+            return findAdmin.userType=='admin'?true:false;
+        }else{
+            return false;
+        }
+    }catch(err){
+        throw err;
+    }
+}
 
 router.post('/signup', async(req, res)=>{
     try{
         const data = req.body;
-        const newPerson = new User(data);
-        const response = await newPerson.save();
-
-        const payload = {
-            id : response.id,
-            name: response.name
+        if((await adminInDb(data))){
+            res.status(403).json({error: "admin is alreaady present."})
+        }else{
+            const newPerson = new User(data);
+            const response = await newPerson.save();
+    
+            const payload = {
+                id : response.id,
+                name: response.name
+            }
+            const token = generateToken(payload);
+            res.status(200).json({response,token});
         }
-        const token = generateToken(payload);
-        res.status(200).json({response,token});
     }catch(err){
         res.status(500).json({error: "Internal server error"})
     }
@@ -85,6 +103,15 @@ router.put('/profile/:field', jwtAuthMiddleware, async(req,res)=>{
     }catch(err){
         res.status(500).json({error:"Internal server error"});
     }
-})
+});
+
+router.get('/candidates', async(req,res) =>{
+    try{
+        const data = await Candidate.find();
+        res.status(200).json(data);
+    }catch(err){
+        res.status(500).json({error:"Internal server error"});
+    }
+});
 
 module.exports = router;
