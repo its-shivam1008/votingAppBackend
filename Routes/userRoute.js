@@ -8,7 +8,7 @@ const adminInDb =async (data) =>{
     try{
         if(data.userType=='admin'){
             const findAdmin = await User.findOne({userType:'admin'});
-            return findAdmin.userType=='admin'?true:false;
+            return findAdmin == null ? false:true;
         }else{
             return false;
         }
