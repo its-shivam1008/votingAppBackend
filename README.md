@@ -30,6 +30,10 @@ To run this project, you will need to add the following environment variables to
 `mongoUrl`
 
 
+## Deployment
+This app is deployed on render here its live link
+[Deployment](https://votingappbackend-iuns.onrender.com)
+
 ## End points
 
 ### User
