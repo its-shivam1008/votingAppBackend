@@ -21,3 +21,6 @@ app.get('/hello', (req,res) =>{
 app.listen(process.env.PORT, () => {
     console.log('App is live at port:',process.env.PORT);
 })
+
+
+export default app;
