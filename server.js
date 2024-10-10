@@ -17,6 +17,9 @@ app.use('/vote', jwtAuthMiddleware, votingRoute);
 app.get('/hello', (req,res) =>{
     res.send('Hello World!');
 })
+app.get('/', (req,res) =>{
+    res.send('Welcome to voting app');
+})
 
 app.listen(process.env.PORT, () => {
     console.log('App is live at port:',process.env.PORT);
