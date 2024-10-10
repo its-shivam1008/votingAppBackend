@@ -31,8 +31,9 @@ To run this project, you will need to add the following environment variables to
 
 
 ## Deployment
-This app is deployed on render here its live link
+This app is deployed on render here its live link 
 [Deployment](https://votingappbackend-iuns.onrender.com)
+[API Endpoint Diagram](https://drive.google.com/file/d/1v-HbeWTUyJJRHfy5cHpHdCYxqP0vtXZM/view?usp=sharing)
 
 ## End points
 
