@@ -18,7 +18,7 @@ app.get('/hello', (req,res) =>{
     res.send('Hello World!');
 })
 app.get('/', (req,res) =>{
-    res.send('Welcome to voting app');
+    res.json({MESSAGE:'Welcome to voting app'});
 })
 
 app.listen(process.env.PORT, () => {
