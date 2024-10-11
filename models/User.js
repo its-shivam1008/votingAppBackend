@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    email:{
+        type:String,
+        required:true
+    },
     adhaarNum:{
         type:Number,
         required:true,
@@ -28,14 +32,11 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    address:{
-        type:String,
-        required:true
-    },
-    contactNum:{
-        type:String,
-        required:true
-    }
+
+    // address:{
+    //     type:String,
+    //     required:true
+    // },
 });
 
 userSchema.pre('save', async function(next){
