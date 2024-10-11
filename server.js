@@ -2,11 +2,14 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 const db = require('./db');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const userRoute = require('./Routes/userRoute');
 const adminRoute = require('./Routes/adminRoute');
 const votingRoute = require('./Routes/votingRoutes');
 const {jwtAuthMiddleware} = require('./jwt')
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
