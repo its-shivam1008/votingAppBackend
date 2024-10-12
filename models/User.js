@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     adhaarNum:{
         type:Number,
@@ -32,6 +33,18 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    verifyCode:{
+        type:String,
+        // required:[true, "code is required"]
+    },
+    verifyCodeExpiry:{
+        type:Date,
+        // required:[true, "Code expiry is required"]
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    }
 
     // address:{
     //     type:String,
