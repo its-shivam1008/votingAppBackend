@@ -185,7 +185,7 @@ export async function sendVerificationEmailNodeMailer(
                                                               <tr>
                                                                   <td class="pad" style="padding-bottom:10px;padding-left:40px;padding-right:40px;padding-top:10px;">
                                                                       <div style="color:#ffffff;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;font-size:26px;line-height:120%;text-align:center;mso-line-height-alt:31.2px;">
-                                                                          <p style="margin: 0;"><span style="word-break: break-word; color: #ffffff;">Your OTP for E-Voting Verification</span></p>
+                                                                          <p style="margin: 0;"><span style="word-break: break-word; color: #ffffff;">Hey ${username}</span></p>
                                                                       </div>
                                                                   </td>
                                                               </tr>
@@ -310,6 +310,6 @@ export async function sendVerificationEmailNodeMailer(
     return { success: true, message: "Verification email send successfully" };
   } catch (err) {
     console.error("Error in sending verification email");
-    return { success: false, message: "Error in sending verification email" };
+    return { success: false, message: "Error in sending verification email", error:err};
   }
 }
