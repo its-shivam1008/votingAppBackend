@@ -22,7 +22,7 @@ router.post("/signup", async (req, res) => {
   try {
     const data = req.body;
     if (await adminInDb(data)) {
-      res.status(403).json({ error: "admin is alreaady present." });
+      res.status(403).json({ message: "admin is alreaady present.", success:false });
     } else {
       const userByEmail = await User.findOne({ email: data.email });
       if (userByEmail) {
@@ -59,19 +59,43 @@ router.post("/signup", async (req, res) => {
         res.status(403).json({message: emailResponse.message, success: true })
       }
   
-      res.status(201).json({ message:"Verification email has been sent.",  response, token });
+      res.status(201).json({ message:"Verification email has been sent.", success:true, response, token });
     }
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", success:false });
   }
 });
+
+router.get('/verify/:verifyCode', jwtAuthMiddleware, async(req,res) => {
+  try{
+    const userId = req.user.id;
+    const verifyCode = req.params.verifyCode;
+    const user = await User.findById(userId)
+    if(user.verifyCode === verifyCode){
+      if(new Date(user.verifyCodeExpiry) > new Date()){
+        const userVerified = await User.findByIdAndUpdate(userId, {isVerified:true})
+        if(!userVerified){
+          res.status(400).json({message:'Unable to verify the user', success:false});
+        }
+        res.status(200).json({message:"User has been verified successfully", success:true})
+      }else{
+        res.status(400).json({message:'Otp has been expired', success:false});
+      }
+    }else{
+      res.status(400).json({message:'Wrong OTP', success:false});
+    }
+    
+  }catch(err){
+    res.status(500).json({ message: "Internal server error", success:false });
+  }
+})
 
 router.post("/login", async (req, res) => {
   try {
     const { adhaarNum, password } = req.body;
     const user = await User.findOne({ adhaarNum: adhaarNum });
     if (!user || !(await user.comparePassword(password))) {
-      res.status(401).json({ error: "Incorrect Adhaar number or password" });
+      res.status(401).json({ message: "Incorrect Adhaar number or password", success:false });
     } else {
       const payload = {
         id: user.id,
@@ -80,10 +104,10 @@ router.post("/login", async (req, res) => {
         isVerified:user.isVerified
       };
       const token = generateToken(payload);
-      res.status(200).json({ token });
+      res.status(200).json({message:'Login success', success:true, token });
     }
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", success:false });
   }
 });
 
@@ -92,9 +116,12 @@ router.get("/profile", jwtAuthMiddleware, async (req, res) => {
     const userData = req.user;
     const userId = userData.id;
     const user = await User.findById(userId);
-    res.status(200).json({ user });
+    if(!user){
+      res.status(404).json({ message: "User not found", success:false });
+    }
+    res.status(200).json({message:'User found', success:true, user });
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", success:false });
   }
 });
 
@@ -110,12 +137,12 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
         const user = await User.findById(userId);
 
         if (!user || !(await user.comparePassword(currentPass))) {
-          res.status(401).json({ error: "Incorrect password" });
+          res.status(401).json({ message: "Incorrect password", success:false });
         } else {
           user.password = newPass;
           const response = await user.save();
 
-          res.status(200).json({ response, mssg: "Updated " + field });
+          res.status(200).json({ response, message: "Updated " + field , success:true});
         }
       } else {
         const response = await User.findByIdAndUpdate(userId, data, {
@@ -123,24 +150,24 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
           new: true,
         });
 
-        res.status(200).json({ response, mssg: "Updated " + field });
+        res.status(200).json({ response, message: "Updated " + field , success:true});
       }
     } else {
       res
         .status(403)
-        .json({ response, mssg: "You are not allowed to update" + field });
+        .json({ response, message: "You are not allowed to update" + field , success:false});
     }
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", success:false });
   }
 });
 
 router.get("/candidates", async (req, res) => {
   try {
     const data = await Candidate.find();
-    res.status(200).json(data);
+    res.status(200).json({message:'Candidates found', success:true,data});
   } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", success:false });
   }
 });
 
