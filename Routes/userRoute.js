@@ -24,13 +24,13 @@ router.post("/signup", async (req, res) => {
     if (await adminInDb(data)) {
       res.status(403).json({ message: "admin is alreaady present.", success:false });
     } else {
-      const userByEmail = await User.findOne({ email: data.email });
+      const userByEmail = await User.findOne({$or:[{ email: data.email }, {adhaarNum: data.adhaarNum}]});
       if (userByEmail) {
         res
           .status(403)
           .json({
             success: false,
-            message: "User with this email is already present",
+            message: "User with this email or aadhar is already present",
           });
       }
 
