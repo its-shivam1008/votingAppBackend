@@ -77,7 +77,14 @@ router.get('/verify/:verifyCode', jwtAuthMiddleware, async(req,res) => {
         if(!userVerified){
           res.status(400).json({message:'Unable to verify the user', success:false});
         }
-        res.status(200).json({message:"User has been verified successfully", success:true})
+        const payload = {
+          id: userVerified.id,
+          name: userVerified.name,
+          userType:userVerified.userType,
+          isVerified:userVerified.isVerified
+        };
+        const token = generateToken(payload);
+        res.status(200).json({message:"User has been verified successfully", success:true, token})
       }else{
         res.status(400).json({message:'Otp has been expired', success:false});
       }
