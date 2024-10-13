@@ -89,7 +89,7 @@ router.get("/verify/:verifyCode", jwtAuthMiddleware, async (req, res) => {
         });
         if (!userVerified) {
           res
-            .status(401)
+            .status(200)
             .json({ message: "Unable to verify the user", success: false });
         }
         const payload = {
@@ -108,11 +108,11 @@ router.get("/verify/:verifyCode", jwtAuthMiddleware, async (req, res) => {
           });
       } else {
         res
-          .status(401)
+          .status(200)
           .json({ message: "Otp has been expired", success: false });
       }
     } else {
-      res.status(401).json({ message: "Wrong OTP", success: false });
+      res.status(200).json({ message: "Wrong OTP", success: false });
     }
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
