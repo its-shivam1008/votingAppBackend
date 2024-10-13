@@ -63,14 +63,12 @@ router.post("/signup", async (req, res) => {
         res.status(403).json({ message: emailResponse.message, success: true });
       }
 
-      res
-        .status(201)
-        .json({
-          message: "Verification email has been sent.",
-          success: true,
-          response,
-          token,
-        });
+      res.status(201).json({
+        message: "Verification email has been sent.",
+        success: true,
+        response,
+        token,
+      });
     }
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
@@ -99,13 +97,11 @@ router.get("/verify/:verifyCode", jwtAuthMiddleware, async (req, res) => {
           isVerified: userVerified.isVerified,
         };
         const token = generateToken(payload);
-        res
-          .status(200)
-          .json({
-            message: "User has been verified successfully",
-            success: true,
-            token,
-          });
+        res.status(200).json({
+          message: "User has been verified successfully",
+          success: true,
+          token,
+        });
       } else {
         res
           .status(200)
@@ -124,12 +120,10 @@ router.put("/resendOtp", jwtAuthMiddleware, async (req, res) => {
     const userId = req.user.id;
     const user = await User.findById(userId);
     if (!user) {
-      res
-        .status(404)
-        .json({
-          message: "Cannot generate otp for a non- existing user",
-          success: true,
-        });
+      res.status(404).json({
+        message: "Cannot generate otp for a non- existing user",
+        success: true,
+      });
     }
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     const expiryDate = new Date();
@@ -137,7 +131,7 @@ router.put("/resendOtp", jwtAuthMiddleware, async (req, res) => {
 
     await User.findByIdAndUpdate(user._id, {
       verifyCode: verifyCode,
-      verifyCodeExpiry: expiryDate
+      verifyCodeExpiry: expiryDate,
     });
 
     const emailResponse = await sendVerificationEmailNodeMailer(
@@ -149,15 +143,12 @@ router.put("/resendOtp", jwtAuthMiddleware, async (req, res) => {
       res.status(403).json({ message: emailResponse.message, success: true });
     }
 
-    res
-      .status(201)
-      .json({
-        message: "Verification email has been sent.",
-        success: true,
-        response,
-        token,
-      });
-
+    res.status(201).json({
+      message: "Verification email has been sent.",
+      success: true,
+      response,
+      token,
+    });
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
   }
@@ -165,15 +156,15 @@ router.put("/resendOtp", jwtAuthMiddleware, async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { adhaarNum, password } = req.body;
-    const user = await User.findOne({ adhaarNum: adhaarNum });
-    if (!user || !(await user.comparePassword(password))) {
-      res
-        .status(401)
-        .json({
-          message: "Incorrect Adhaar number or password",
-          success: false,
-        });
+    const data = req.body;
+    const user = await User.findOne({
+      $or: [{ email: data.cred }, { adhaarNum: data.cred }],
+    });
+    if (!user || !(await user.comparePassword(data.password))) {
+      res.status(401).json({
+        message: "Incorrect Adhaar number or password",
+        success: false,
+      });
     } else {
       const payload = {
         id: user.id,
@@ -237,13 +228,11 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
           .json({ response, message: "Updated " + field, success: true });
       }
     } else {
-      res
-        .status(403)
-        .json({
-          response,
-          message: "You are not allowed to update" + field,
-          success: false,
-        });
+      res.status(403).json({
+        response,
+        message: "You are not allowed to update" + field,
+        success: false,
+      });
     }
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
