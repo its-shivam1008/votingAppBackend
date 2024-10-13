@@ -15,6 +15,20 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
+    profilePic:{
+        type:String
+    },
+    votedFor:
+        {
+            party:{
+                type:String
+            },
+            votedAt:{
+                type:Date,
+                default: Date.now()
+            }
+        }
+    ,
     adhaarNum:{
         type:Number,
         required:true,

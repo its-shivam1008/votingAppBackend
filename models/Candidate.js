@@ -5,6 +5,14 @@ const newCandidate = new mongoose.Schema({
         type: String,
         required:true
     },
+    about:{
+        type:String,
+        required:true
+    },
+    profilePic:{
+        type:String,
+        required:true
+    },
     age:{
         type:Number,
         required:true
