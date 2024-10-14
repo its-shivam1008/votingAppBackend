@@ -36,39 +36,39 @@ router.post("/signup", async (req, res) => {
           success: false,
           message: "User with this email or aadhar is already present",
         });
+      }else{
+        const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + 1);
+  
+        const newData = { ...data, verifyCode, verifyCodeExpiry: expiryDate };
+        const newPerson = new User(newData);
+        const response = await newPerson.save();
+  
+        const payload = {
+          id: response.id,
+          name: response.name,
+          userType: response.userType,
+          isVerified: response.isVerified,
+        };
+        const token = generateToken(payload);
+  
+        const emailResponse = await sendVerificationEmailNodeMailer(
+          data.email,
+          data.name,
+          verifyCode
+        );
+        if (!emailResponse.success) {
+          res.status(403).json({ message: emailResponse.message, success: true });
+        }
+  
+        res.status(201).json({
+          message: "Verification email has been sent.",
+          success: true,
+          response,
+          token,
+        });
       }
-
-      const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiryDate = new Date();
-      expiryDate.setHours(expiryDate.getHours() + 1);
-
-      const newData = { ...data, verifyCode, verifyCodeExpiry: expiryDate };
-      const newPerson = new User(newData);
-      const response = await newPerson.save();
-
-      const payload = {
-        id: response.id,
-        name: response.name,
-        userType: response.userType,
-        isVerified: response.isVerified,
-      };
-      const token = generateToken(payload);
-
-      const emailResponse = await sendVerificationEmailNodeMailer(
-        data.email,
-        data.name,
-        verifyCode
-      );
-      if (!emailResponse.success) {
-        res.status(403).json({ message: emailResponse.message, success: true });
-      }
-
-      res.status(201).json({
-        message: "Verification email has been sent.",
-        success: true,
-        response,
-        token,
-      });
     }
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
