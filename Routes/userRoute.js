@@ -199,7 +199,7 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
     const field = req.params.field;
     const data = req.body;
     const userId = req.user.id;
-    if (field == "address" || field == "contactNum" || field == "password") {
+    if (field=='otherFields' || field == "password") {
       if (field == "password") {
         const { currentPass, newPass } = req.body;
 
@@ -215,7 +215,7 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
 
           res
             .status(200)
-            .json({ response, message: "Updated " + field, success: true });
+            .json({ response, message: "Password updated", success: true });
         }
       } else {
         const response = await User.findByIdAndUpdate(userId, data, {
@@ -225,7 +225,7 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
 
         res
           .status(200)
-          .json({ response, message: "Updated " + field, success: true });
+          .json({ response, message: "Changes saved", success: true });
       }
     } else {
       res.status(403).json({
