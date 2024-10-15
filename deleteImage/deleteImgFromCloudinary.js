@@ -1,4 +1,4 @@
-
+const axios = require('axios/dist/node/axios.cjs')
 export const deleteImageFromCloudinary = async (imgUrl) => {
     try {
       
@@ -14,11 +14,11 @@ export const deleteImageFromCloudinary = async (imgUrl) => {
         data
       );
   
-      console.log('Delete response:', response.data);
-      return response.data;
+    //   console.log('Delete response:', response.data);
+      return {message:'deleted the image', data:response.data, success:true};
     } catch (error) {
-      console.error('Error deleting image from Cloudinary:', error);
-      throw error;
+    //   console.error('Error deleting image from Cloudinary:', error);
+      return {message:'Error deleting image from Cloudinary', error:error, success:false}
     }
   }
   

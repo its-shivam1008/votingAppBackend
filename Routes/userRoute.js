@@ -239,6 +239,20 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
   }
 });
 
+router.get('/profile/deleteImage/:imageUrl',jwtAuthMiddleware, async(req,res) => {
+  try{
+    const field = req.params.imageUrl;
+    const response = await deleteImageFromCloudinary(field);
+    if(response.success){
+      res.status(200).json({...response})
+    }else{
+      res.status(400).json({...response})
+    }
+  }catch (err) {
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+})
+
 router.get("/candidates", async (req, res) => {
   try {
     const data = await Candidate.find();
