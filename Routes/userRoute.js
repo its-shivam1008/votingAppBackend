@@ -6,6 +6,7 @@ const { jwtAuthMiddleware, generateToken } = require("./../jwt");
 const {
   sendVerificationEmailNodeMailer,
 } = require("../email/sendEmailVerification");
+const { deleteImageFromCloudinary } = require("../deleteImage/deleteImgFromCloudinary");
 
 const adminInDb = async (data) => {
   try {
