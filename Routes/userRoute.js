@@ -239,7 +239,7 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
   }
 });
 
-router.POST('/profile/deleteImage',jwtAuthMiddleware, async(req,res) => {
+router.post('/profile/deleteImage',jwtAuthMiddleware, async(req,res) => {
   try{
     const data = req.body;
     const response = await deleteImageFromCloudinary(data.imgUrl);
