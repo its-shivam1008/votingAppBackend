@@ -159,7 +159,7 @@ router.post("/login", async (req, res) => {
   try {
     const data = req.body;
     const user = await User.findOne({
-      $or: [{ email: typeof(data.cred) === 'string' ? data.cred : null }, { adhaarNum: typeof(data.cred) === 'number' ? Number(data.cred) : null }],
+      $or: [{ email: typeof(data.cred) === 'string' ? data.cred : null }, { adhaarNum: !isNaN(data.cred) && !isNaN(parseInt(data.cred)) ? Number(data.cred) : null }],
     });
     if (!user || !(await user.comparePassword(data.password))) {
       res.status(401).json({
