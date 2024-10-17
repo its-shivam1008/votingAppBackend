@@ -48,14 +48,14 @@ router.put('/candidate/:field/:candidateId', async(req, res)=>{
             const field = req.params.field;
             const candidateId = req.params.candidateId;
             const data = req.body;
-            if(field=='name' || field=="age" || field=="party"){
+            if(field!='voteCount' && field!="votes"){
                 const response = await Candidate.findByIdAndUpdate(candidateId, data, {
                     runValidators: true,
                     new:true
                 });
-                res.status(200).json({response, message:"Updated "+field});
+                res.status(200).json({response, message:"Updated the candidate"});
             }else{
-                res.status(404).json({error:"Cannot update "+field});
+                res.status(404).json({error:"Cannot update fields related with votes"});
             }
         }
     }catch(err){
