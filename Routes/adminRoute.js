@@ -15,15 +15,15 @@ const checkAdmin = async (userId)=>{
 router.post('/candidate', async(req,res)=>{
     try{
         if(!(await checkAdmin(req.user.id))){
-            res.status(404).json({error:"you are not permitted to access this route"});
+            res.status(404).json({message:"you are not permitted to access this route", success:false});
         }else{
             const data = req.body;
             const newCandidate = new Candidate(data);
             const response = await newCandidate.save();
-            res.status(200).json({response});
+            res.status(200).json({response, success:true, message:'Candidate is added'});
         }
     }catch(err){
-        res.status(500).json({error:"Internal server error"});
+        res.status(500).json({message:"Internal server error", success:false});
     }
 });
 

@@ -5,21 +5,14 @@ const newCandidate = new mongoose.Schema({
         type: String,
         required:true
     },
-    about:{
-        type:String,
-        required:true
-    },
     profilePic:{
         type:String,
         required:true
     },
-    age:{
-        type:Number,
-        required:true
-    },
     party:{
         type:String,
-        enum:["BJP", "CONGRESS", "SP","BSP","TMC"]   
+        enum:["BJP", "INC", "SPA","DMK","AITC", "AAP", "TDP", "JD(U)", "SHSUBT", "NCPSP", "SHS"],
+        required:true
     },
     votes:[
         {
