@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 app.use('/user', userRoute);
 app.use('/admin', jwtAuthMiddleware, adminRoute);
-app.use('/vote', jwtAuthMiddleware, votingRoute);
+app.use('/vote', votingRoute);
 
 app.get('/hello', (req,res) =>{
     res.send('Hello World!');

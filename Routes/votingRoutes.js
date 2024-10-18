@@ -7,7 +7,7 @@ const isVoter = async (userId) =>{
     const user = await User.findById(userId);
     return user.userType === 'voter'? true : false;
 }
-router.put('/:candidateId', async(req,res) =>{
+router.put('/:candidateId', jwtAuthMiddleware, async(req,res) =>{
     try{
         if(await isVoter(req.user.id)){
 
@@ -41,21 +41,13 @@ router.get('/count', async(req, res) =>{
     try{
         const candidate = await Candidate.find().sort({voteCount: "desc"});
 
-        // const record = candidate.map((data) =>{
-        //     return {
-        //         name: data.name,
-        //         party: data.party,
-        //         count: data.voteCount
-        //     }
-        // })
-
         const record = candidate.reduce((acc, data) => {
             acc[data.party] = (acc[data.party] || 0) + data.voteCount;
             return acc;
           }, {});
-        res.status(200).json({ message:'Got the counts', success:'true' , record});
+        res.status(200).json({ message:'Got the counts', success:true , record});
     }catch(err){
-        res.status(500).json({error:"Internal server error"});
+        res.status(500).json({message:"Internal server error", success:false});
     }
 })
 module.exports = router;
