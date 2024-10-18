@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require("./../models/User");
 const Candidate = require('./../models/Candidate');
+const { jwtAuthMiddleware } = require('../jwt');
 
 const isVoter = async (userId) =>{
     const user = await User.findById(userId);
