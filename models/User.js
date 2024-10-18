@@ -24,8 +24,7 @@ const userSchema = new mongoose.Schema({
                 type:String
             },
             votedAt:{
-                type:Date,
-                default: Date.now()
+                type:Date
             }
         }
     ,

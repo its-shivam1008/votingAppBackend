@@ -21,6 +21,8 @@ router.put('/:candidateId', async(req,res) =>{
     
                 candidate.voteCount = candidate.voteCount+1;
                 userVote.isVoted = true;
+                userVote.votedFor.party = candidate.party;
+                userVote.votedFor.votedAt = new Date().toISOString();
                 await userVote.save();
                 const response = await candidate.save();
                 res.status(200).json({message:'Voted sucessfully for '+response.name, success:true});
