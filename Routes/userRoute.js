@@ -263,4 +263,13 @@ router.get("/candidates", async (req, res) => {
   }
 });
 
+router.get("/totalVoters", async (req, res) => {
+  try {
+    const data = await User.find({userType:'voter'});
+    const data2 = await User.find({isVoted:true});
+    res.status(200).json({ message: "voters found", totalVoters:data.length, usersVoted:data2, success: true});
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+});
 module.exports = router;
