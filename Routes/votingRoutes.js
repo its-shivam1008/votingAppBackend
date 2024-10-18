@@ -23,15 +23,15 @@ router.put('/:candidateId', async(req,res) =>{
                 userVote.isVoted = true;
                 await userVote.save();
                 const response = await candidate.save();
-                res.status(200).json({response});
+                res.status(200).json({message:'Voted sucessfully for '+response.name, success:true});
             }else{
-                res.status(404).json({message:"Already voted, you can only vote once"});
+                res.status(404).json({message:"Already voted, you can only vote once", success:false});
             }
         }else{
-            res.status(404).json({error:"You cannot vote, Admin's account"});
+            res.status(404).json({message:"You cannot vote, Admin's account", success:false});
         }
     }catch(err){
-        res.status(500).json({error:"Internal server error"});
+        res.status(500).json({message:"Internal server error", success:false});
     }
 });
 
