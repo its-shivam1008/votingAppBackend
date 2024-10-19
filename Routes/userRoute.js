@@ -278,71 +278,71 @@ router.get("/totalVoters", async (req, res) => {
 });
 module.exports = router;
 
-router.post("/massData", async (req,res) => {
-  try{
-    const users = req.body; // Get the array of user objects from the request body
+// router.post("/massData", async (req,res) => {
+//   try{
+//     const users = req.body; // Get the array of user objects from the request body
 
-    if (!Array.isArray(users.data) || users.length === 0) {
-      return res.status(400).json({ message: 'Invalid input, expected an array of user objects', success: false });
-    }
+//     if (!Array.isArray(users.data) || users.length === 0) {
+//       return res.status(400).json({ message: 'Invalid input, expected an array of user objects', success: false });
+//     }
 
-    const userPromises = users.data.map(async (userData) => {
-      if (!userData.password) {
-        throw new Error("Password is required for all users");
-      }
-      const user = new User(userData);
-      await user.save();
-      return user; 
-    });
+//     const userPromises = users.data.map(async (userData) => {
+//       if (!userData.password) {
+//         throw new Error("Password is required for all users");
+//       }
+//       const user = new User(userData);
+//       await user.save();
+//       return user; 
+//     });
 
-    const result = await Promise.all(userPromises); // Wait for all saves to complete
+//     const result = await Promise.all(userPromises); // Wait for all saves to complete
 
-    res.status(201).json({ message: 'Users added successfully', data: result, success: true });
-  }catch (err) {
-    res.status(500).json({ message: "Internal server error", success: false });
-  }
-})
+//     res.status(201).json({ message: 'Users added successfully', data: result, success: true });
+//   }catch (err) {
+//     res.status(500).json({ message: "Internal server error", success: false });
+//   }
+// })
 
-router.delete("/deleteUnverified", async (req, res) => {
-  try {
-    // Delete users who do not have a verifyCode field
-    const result = await User.deleteMany({ verifyCode: { $exists: false } });
+// router.delete("/deleteUnverified", async (req, res) => {
+//   try {
+//     // Delete users who do not have a verifyCode field
+//     const result = await User.deleteMany({ verifyCode: { $exists: false } });
 
-    res.status(200).json({
-      message: 'Users without verifyCode deleted successfully',
-      deletedCount: result.deletedCount,
-      success: true
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message || "Internal server error", success: false });
-  }
-});
+//     res.status(200).json({
+//       message: 'Users without verifyCode deleted successfully',
+//       deletedCount: result.deletedCount,
+//       success: true
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message || "Internal server error", success: false });
+//   }
+// });
 
 
-router.put('/updateAllCandidates', async (req,res) => {
-  try{
-    const candidates = await Candidate.find();
-    const users = await User.find({ isVoted: true });
-    for (const candidate of candidates) {
-      for (const user of users) {  
-        if (user.votedFor.party === candidate.party) {    
-          const voteEntry = {
-            user: user._id,
-            votedAt: user.votedFor.votedAt || Date.now() 
-          };
+// router.put('/updateAllCandidates', async (req,res) => {
+//   try{
+//     const candidates = await Candidate.find();
+//     const users = await User.find({ isVoted: true });
+//     for (const candidate of candidates) {
+//       for (const user of users) {  
+//         if (user.votedFor.party === candidate.party) {    
+//           const voteEntry = {
+//             user: user._id,
+//             votedAt: user.votedFor.votedAt || Date.now() 
+//           };
     
-          candidate.votes.push(voteEntry);
-        }
-      }
+//           candidate.votes.push(voteEntry);
+//         }
+//       }
 
-      candidate.voteCount = candidate.votes.length;
+//       candidate.voteCount = candidate.votes.length;
 
-      await candidate.save();
-    }
+//       await candidate.save();
+//     }
 
-    res.status(200).json({ message: 'Candidates updated successfully', success: true });;
+//     res.status(200).json({ message: 'Candidates updated successfully', success: true });;
 
-  } catch (err) {
-    res.status(500).json({ message: err.message || "Internal server error", success: false });
-  }
-})
+//   } catch (err) {
+//     res.status(500).json({ message: err.message || "Internal server error", success: false });
+//   }
+// })
