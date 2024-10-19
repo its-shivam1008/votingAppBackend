@@ -276,3 +276,20 @@ router.get("/totalVoters", async (req, res) => {
   }
 });
 module.exports = router;
+
+router.post("/massData", async (req,res) => {
+  try{
+    const users = req.body; // Get the array of user objects from the request body
+
+    if (!Array.isArray(users.data) || users.length === 0) {
+      return res.status(400).json({ message: 'Invalid input, expected an array of user objects', success: false });
+    }
+
+    // Insert users in bulk
+    const result = await User.insertMany(users.data);
+
+    res.status(201).json({ message: 'Users added successfully', data: result, success: true });
+  }catch (err) {
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+})
