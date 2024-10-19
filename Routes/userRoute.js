@@ -285,11 +285,34 @@ router.post("/massData", async (req,res) => {
       return res.status(400).json({ message: 'Invalid input, expected an array of user objects', success: false });
     }
 
-    // Insert users in bulk
-    const result = await User.insertMany(users.data);
+    const userPromises = users.data.map(async (userData) => {
+      if (!userData.password) {
+        throw new Error("Password is required for all users");
+      }
+      const user = new User(userData);
+      await user.save();
+      return user; 
+    });
+
+    const result = await Promise.all(userPromises); // Wait for all saves to complete
 
     res.status(201).json({ message: 'Users added successfully', data: result, success: true });
   }catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 })
+
+router.delete("/deleteUnverified", async (req, res) => {
+  try {
+    // Delete users who do not have a verifyCode field
+    const result = await User.deleteMany({ verifyCode: { $exists: false } });
+
+    res.status(200).json({
+      message: 'Users without verifyCode deleted successfully',
+      deletedCount: result.deletedCount,
+      success: true
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Internal server error", success: false });
+  }
+});
