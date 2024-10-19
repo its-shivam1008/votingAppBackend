@@ -270,7 +270,8 @@ router.get("/totalVoters", async (req, res) => {
       { $match: { isVoted: true } },
       { $sample: { size: 15 } } 
     ]);
-    res.status(200).json({ message: "voters found", totalVoters:data.length, usersVoted:data2, success: true});
+    const data3 = await User.find({isVoted:true});
+    res.status(200).json({ message: "voters found", totalVoters:data.length, usersVoted:data2, totalUsersVoted:data3.length, success: true});
   } catch (err) {
     res.status(500).json({ message: "Internal server error", success: false });
   }
@@ -316,3 +317,32 @@ router.delete("/deleteUnverified", async (req, res) => {
     res.status(500).json({ message: err.message || "Internal server error", success: false });
   }
 });
+
+
+router.put('/updateAllCandidates', async (req,res) => {
+  try{
+    const candidates = await Candidate.find();
+    const users = await User.find({ isVoted: true });
+    for (const candidate of candidates) {
+      for (const user of users) {  
+        if (user.votedFor.party === candidate.party) {    
+          const voteEntry = {
+            user: user._id,
+            votedAt: user.votedFor.votedAt || Date.now() 
+          };
+    
+          candidate.votes.push(voteEntry);
+        }
+      }
+
+      candidate.voteCount = candidate.votes.length;
+
+      await candidate.save();
+    }
+
+    res.status(200).json({ message: 'Candidates updated successfully', success: true });;
+
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Internal server error", success: false });
+  }
+})
