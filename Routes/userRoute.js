@@ -163,7 +163,7 @@ router.post("/login", async (req, res) => {
     });
     if (!user || !(await user.comparePassword(data.password))) {
       res.status(401).json({
-        message: "Incorrect Adhaar number or password",
+        message: "Wrong credentials entered",
         success: false,
       });
     } else {
