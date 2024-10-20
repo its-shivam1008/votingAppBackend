@@ -161,14 +161,6 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({
       $or: [{ email: typeof(data.cred) === 'string' ? data.cred : null }, { adhaarNum: !isNaN(data.cred) && !isNaN(parseInt(data.cred)) ? Number(data.cred) : null }],
     });
-    if(user){
-      const typo = await user.comparePassword(data.password)
-      res.status(200).json({
-        message: "Got the user",
-        success: true,
-        user, typo
-      });
-    }
     if (!user || !(await user.comparePassword(data.password))) {
       res.status(401).json({
         message: "Wrong credentials entered",
