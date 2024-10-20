@@ -219,10 +219,7 @@ router.put("/profile/:field", jwtAuthMiddleware, async (req, res) => {
             .json({ response, message: "Password updated", success: true });
         }
       } else {
-        const response = await User.findByIdAndUpdate(userId, data, {
-          runValidators: true,
-          new: true,
-        });
+        const response = await User.findByIdAndUpdate(userId, data);
 
         res
           .status(200)
