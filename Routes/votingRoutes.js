@@ -21,10 +21,18 @@ router.put('/:candidateId', jwtAuthMiddleware, async(req,res) =>{
                 });
     
                 candidate.voteCount = candidate.voteCount+1;
-                userVote.isVoted = true;
-                userVote.votedFor.party = candidate.party;
-                userVote.votedFor.votedAt = new Date().toISOString();
-                await userVote.save();
+                // userVote.isVoted = true;
+                // userVote.votedFor.party = candidate.party;
+                // userVote.votedFor.votedAt = new Date().toISOString();
+                const votedDate = new Date().toISOString();
+                const data = {
+                    isVoted:true,
+                    votedFor:{
+                        party:candidate.party,
+                        votedAt:votedDate
+                    }
+                }
+                const userUpdated = await User.findByIdAndUpdate(userVote._id,data);
                 const response = await candidate.save();
                 res.status(200).json({message:'Voted sucessfully for '+response.name, success:true});
             }else{
